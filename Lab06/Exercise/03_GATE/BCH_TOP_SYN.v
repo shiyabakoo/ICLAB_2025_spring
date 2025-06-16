@@ -1,0 +1,1 @@
+../02_SYN/Netlist/BCH_TOP_SYN.v

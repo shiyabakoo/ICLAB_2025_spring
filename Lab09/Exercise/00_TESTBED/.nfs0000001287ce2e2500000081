@@ -1,0 +1,174 @@
+//############################################################################
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//   (C) Copyright Laboratory System Integration and Silicon Implementation
+//   All Right Reserved
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//   2023 ICLAB Fall Course
+//   Lab09      : BEV
+//   Author     : Tzu-Yun Huang
+//	 Editor		  : Jui-Huang Tsai
+//                
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//   File Name   : pseudo_DRAM.sv
+//   Module Name : pseudo_DRAM
+//   Release version : v2.0 (Release Date: Nov-2021)
+//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//############################################################################
+
+`include "Usertype.sv"
+
+module pseudo_DRAM(input clk, INF.DRAM inf);
+import usertype::*;
+
+`protected
+
+//================================================================
+// parameters & integer
+//================================================================
+
+parameter DRAM_p_r = "../00_TESTBED/DRAM/dram.dat";
+
+parameter DRAM_R_latency = 100;
+parameter DRAM_W_latency = 100;
+parameter DRAM_B_latency = 100;
+
+`endprotected
+// ===============================================================
+// wire & registers 
+//================================================================
+
+logic [7:0] DRAM[(65536+256*8)-1:65536+0];
+logic [16:0] my_addr, golden_addr;
+logic my_op, golden_op;
+logic [63:0] my_data;
+logic [63:0] raw_R_data;
+
+initial $readmemh(DRAM_p_r, DRAM);	
+initial begin
+    inf.AR_READY = 'b0;		
+	inf.R_VALID  = 'b0;
+	inf.R_DATA   = 'b0;	
+    inf.AW_READY = 'b0;
+    inf.W_READY  = 'b0;
+    inf.B_VALID  = 'b0;
+    inf.B_RESP   = 'b0;
+    inf.R_RESP   = 'b0;
+end
+
+initial begin
+	forever@(posedge clk)begin
+		if(inf.AR_VALID)begin
+			@(posedge clk);
+			inf.AR_READY = 'b1;
+			my_addr  = inf.AR_ADDR;
+			my_op    = 'b1;
+			@(posedge clk);
+			inf.AR_READY = 'b0;
+			
+			repeat(DRAM_R_latency) @(posedge clk);  // DRAM_R_latency
+			inf.R_VALID = 'b1;
+			raw_R_data = {DRAM[my_addr+7],DRAM[my_addr+6],DRAM[my_addr+5],DRAM[my_addr+4],
+                           DRAM[my_addr+3],DRAM[my_addr+2],DRAM[my_addr+1],DRAM[my_addr]};
+			inf.R_DATA  = {DRAM[my_addr+7],DRAM[my_addr+6],DRAM[my_addr+5],DRAM[my_addr+4],
+                           DRAM[my_addr+3],DRAM[my_addr+2],DRAM[my_addr+1],DRAM[my_addr]};
+			inf.R_RESP   = 'b0;
+			
+			@(posedge clk);
+                        
+            while(!inf.R_READY) begin
+                @(posedge clk);
+            end
+			
+			inf.R_VALID = 'b0;
+			inf.R_DATA  = 'b0;
+			inf.R_RESP  = 'b0;
+		end 
+	end
+end
+
+initial begin 
+	forever@(posedge clk)begin
+		if(inf.AW_VALID)begin
+			@(posedge clk);
+			inf.AW_READY = 'b1;
+			my_addr  = inf.AW_ADDR;
+			my_op    = 'b0;
+			@(posedge clk);
+			inf.AW_READY = 'b0;
+			
+			while(!inf.W_VALID)begin
+				@(posedge clk);
+			end
+			
+			repeat(DRAM_W_latency) @(posedge clk);  // DRAM_W_latency
+			inf.W_READY = 'b1;
+			my_data = inf.W_DATA;
+			
+			@(posedge clk);
+		   
+			inf.W_READY = 'b0;
+			repeat(DRAM_B_latency) @(posedge clk);   // DRAM_B_latency
+            DRAM[my_addr+7] = my_data[63:56];
+			DRAM[my_addr+6] = my_data[55:48];
+			DRAM[my_addr+5] = my_data[47:40];
+			DRAM[my_addr+4] = my_data[39:32];
+			DRAM[my_addr+3] = my_data[31:24];
+			DRAM[my_addr+2] = my_data[23:16];
+			DRAM[my_addr+1] = my_data[15: 8];
+			DRAM[my_addr+0] = my_data[ 7: 0];
+			inf.B_VALID = 'b1;
+			inf.B_RESP  = 'b00;
+			
+            @(posedge clk);
+                        
+            while(!inf.B_READY) begin
+                @(posedge clk);
+            end
+			
+			inf.B_VALID = 'b0;
+			inf.B_RESP  = 'b00;
+		end
+	end
+end
+
+initial begin 
+	forever@(negedge clk)begin
+	    if(inf.AR_VALID)begin
+		    if((inf.AR_ADDR < 17'h10000)||(inf.AR_ADDR > 17'h107fc))begin
+			    $display("*************************************************************************");
+				$display("*                          DRAM READ FAIL !                             *");
+				$display("*                            ADDR  =  %d                                *",inf.AR_ADDR);
+				$display("*                            OUT OF RANGE                               *");
+				$display("*************************************************************************");			   	
+			    repeat(4) @(negedge clk);
+				$finish;
+			end
+		end
+	    if(inf.AW_VALID)begin
+		    if((inf.AW_ADDR < 17'h10000)||(inf.AW_ADDR > 17'h107fc))begin
+			    $display("*************************************************************************");
+				$display("*                         DRAM WRITE FAIL !                             *");
+				$display("*                            ADDR  =  %d                                *",inf.AW_ADDR);
+				$display("*                            OUT OF RANGE                               *");
+				$display("*************************************************************************");			   	
+			    repeat(4) @(negedge clk);
+				$finish;
+			end	
+		end		
+	end
+end
+
+function [6:0] encoding;
+	input [63:0] data;
+	integer i, j, k;
+	logic [6:0] indice [0:63];
+	for(i=0;i<64;i++) begin
+		indice[i] = (i+1) && data[i];
+	end
+endfunction
+
+
+endmodule

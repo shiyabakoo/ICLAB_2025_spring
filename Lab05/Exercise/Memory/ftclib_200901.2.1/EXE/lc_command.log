@@ -1,0 +1,9 @@
+#@ # 
+#@ # Running lc_shell Version T-2022.03 for linux64 -- Feb 22, 2022
+#@ # Date:   Thu Jun  5 11:31:54 2025
+#@ # Run by: iclab023@ee28
+#@ 
+
+read_lib SUMA180_256X16_WC.lib
+write_lib SUMA180_256X16_WC -output SUMA180_256X16_WC.db
+exit

@@ -1,0 +1,65 @@
+[05/25 00:21:29      0s] 
+[05/25 00:21:29      0s] Cadence Innovus(TM) Implementation System.
+[05/25 00:21:29      0s] Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+[05/25 00:21:29      0s] 
+[05/25 00:21:29      0s] Version:	v20.15-s105_1, built Tue Jul 27 14:15:35 PDT 2021
+[05/25 00:21:29      0s] Options:	
+[05/25 00:21:29      0s] Date:		Sun May 25 00:21:29 2025
+[05/25 00:21:29      0s] Host:		ee28 (x86_64 w/Linux 3.10.0-1160.88.1.el7.x86_64) (64cores*256cpus*AMD EPYC 7713 64-Core Processor 512KB)
+[05/25 00:21:29      0s] OS:		CentOS Linux release 7.9.2009 (Core)
+[05/25 00:21:29      0s] 
+[05/25 00:21:29      0s] License:
+[05/25 00:21:29      0s] 		invs	Innovus Implementation System	20.1	checkout succeeded
+[05/25 00:21:29      0s] 		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required CPU count.
+[05/25 00:21:43     11s] @(#)CDS: Innovus v20.15-s105_1 (64bit) 07/27/2021 14:15 (Linux 2.6.32-431.11.2.el6.x86_64)
+[05/25 00:21:43     11s] @(#)CDS: NanoRoute 20.15-s105_1 NR210726-1341/20_15-UB (database version 18.20.554) {superthreading v2.14}
+[05/25 00:21:43     11s] @(#)CDS: AAE 20.15-s020 (64bit) 07/27/2021 (Linux 2.6.32-431.11.2.el6.x86_64)
+[05/25 00:21:43     11s] @(#)CDS: CTE 20.15-s024_1 () Jul 23 2021 04:46:45 ( )
+[05/25 00:21:43     11s] @(#)CDS: SYNTECH 20.15-s012_1 () Jul 12 2021 23:29:38 ( )
+[05/25 00:21:43     11s] @(#)CDS: CPE v20.15-s071
+[05/25 00:21:43     11s] @(#)CDS: IQuantus/TQuantus 20.1.1-s460 (64bit) Fri Mar 5 18:46:16 PST 2021 (Linux 2.6.32-431.11.2.el6.x86_64)
+[05/25 00:21:43     11s] @(#)CDS: OA 22.60-p058 Tue Jun 15 18:38:04 2021
+[05/25 00:21:43     11s] @(#)CDS: SGN 20.10-d001 (01-Jun-2020) (64 bit executable, Qt5.9.0)
+[05/25 00:21:43     11s] @(#)CDS: RCDB 11.15.0
+[05/25 00:21:43     11s] @(#)CDS: STYLUS 20.10-p029_1 (06/24/2021 01:33 PDT)
+[05/25 00:21:43     11s] Create and set the environment variable TMPDIR to /tmp/innovus_temp_235189_ee28_iclab023_ZkZwwb.
+
+[05/25 00:21:43     11s] Change the soft stacksize limit to 0.2%RAM (2063 mbytes). Set global soft_stack_size_limit to change the value.
+[05/25 00:21:45     13s] 
+[05/25 00:21:45     13s] **INFO:  MMMC transition support version v31-84 
+[05/25 00:21:45     13s] 
+[05/25 00:21:45     13s] <CMD> set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+[05/25 00:21:45     13s] <CMD> suppressMessage ENCEXT-2799
+[05/25 00:21:46     13s] <CMD> getVersion
+[05/25 00:21:46     13s] [INFO] Loading Pegasus 21.21 fill procedures
+[05/25 00:21:46     13s] <CMD> win
+[05/25 00:22:05     14s] <CMD> encMessage warning 0
+[05/25 00:22:05     14s] Suppress "**WARN ..." messages.
+[05/25 00:22:05     14s] <CMD> encMessage debug 0
+[05/25 00:22:05     14s] <CMD> encMessage info 0
+[05/25 00:22:05     14s] **ERROR: (IMPSYT-7338):	The specified design session directory '/RAID2/COURSE/2025_Spring/iclab/iclab023/Lab11/05_APR/test/CHIP.inn.dat' could not be located as specified. Check your file system, correct the location, and try restoring the design again.
+[05/25 00:22:05     14s] 
+[05/25 00:22:05     14s] 
+[05/25 00:22:05     14s] ERROR: 
+[05/25 00:22:05     14s] 
+[05/25 00:22:05     14s] 
+[05/25 00:22:05     14s]     while executing
+[05/25 00:22:05     14s] "error $catchMsg"
+[05/25 00:22:05     14s]     (procedure "restoreDesign" line 31)
+[05/25 00:22:05     14s] 
+[05/25 00:22:10     15s] 
+--------------------------------------------------------------------------------
+Exiting Innovus on Sun May 25 00:22:10 2025
+  Total CPU time:     0:00:15
+  Total real time:    0:00:43
+  Peak memory (main): 673.92MB
+
+[05/25 00:22:10     15s] 
+[05/25 00:22:10     15s] *** Memory Usage v#1 (Current mem = 916.234M, initial mem = 284.375M) ***
+[05/25 00:22:10     15s] 
+[05/25 00:22:10     15s] *** Summary of all messages that are not suppressed in this session:
+[05/25 00:22:10     15s] Severity  ID               Count  Summary                                  
+[05/25 00:22:10     15s] ERROR     IMPSYT-7338          1  The specified design session directory '...
+[05/25 00:22:10     15s] *** Message Summary: 0 warning(s), 1 error(s)
+[05/25 00:22:10     15s] 
+[05/25 00:22:10     15s] --- Ending "Innovus" (totcpu=0:00:15.2, real=0:00:41.0, mem=916.2M) ---

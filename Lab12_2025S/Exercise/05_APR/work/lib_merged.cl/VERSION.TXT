@@ -1,0 +1,11 @@
+* The organization, structure, and layout of this file are copyrights
+* and confidential and proprietary trade secrets of Cadence Design Systems,
+* subject to the terms and conditions of the license agreement in effect
+* between you and Cadence Design Systems, Inc.
+Library Name             : lib_merged
+Custom Label             : 
+Library Major Version    : 4
+Application Name         : mergegrid
+Application Version      : v3.1.0
+Date Created             : 2025-May-29 04:38:21 (2025-May-28 20:38:21 GMT)
+Date Modified            : 2025-May-29 04:38:21 (2025-May-28 20:38:21 GMT)

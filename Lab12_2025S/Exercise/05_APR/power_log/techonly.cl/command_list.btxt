@@ -1,0 +1,6 @@
+temperature -1
+extraction_tech_file /RAID2/COURSE/2025_Spring/iclab/iclab023/Lab12_2025S/Exercise/05_APR/RC/icecaps.tch
+spice_subckts_xyscaling 1000
+use_powergate_data_from_lib 0
+default_frequency 2e+08
+decap_frequency 1e+08

@@ -1,0 +1,9 @@
+FORMATVERSION 1
+ADDINST ANTENNA DIODE_1 1 addPortAsNeeded
+INSTTERM A cache_data_out[5] -
+ADDINST ANTENNA DIODE_2 1 addPortAsNeeded
+INSTTERM A cache_data_out[4] -
+ADDINST ANTENNA DIODE_3 1 addPortAsNeeded
+INSTTERM A cache_data_out[1] -
+ADDINST ANTENNA DIODE_4 1 addPortAsNeeded
+INSTTERM A cache_data_out[0] -

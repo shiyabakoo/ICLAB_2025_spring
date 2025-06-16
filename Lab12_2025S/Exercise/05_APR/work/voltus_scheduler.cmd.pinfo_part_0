@@ -1,0 +1,42 @@
+
+Begin Preparing Data for Parasitic Extraction
+...
+Ended Preparing Data for Parasitic Extraction: (cpu=0:00:08, real=0:00:09, mem(process/total/peak)=365.96MB/6733.17MB/2454.28MB)
+
+Begin Parasitic Extraction
+
+Nets to Extract:
+GND
+VCC
+
+** INFO:  (VOLTUS_EXTR-1054): Extracting following DFM effects:
+ MetalFill        : n/a 
+ WEE Effects      : n/a 
+ Erosion Effects  : n/a 
+ T/B Enlargements : ON 
+ R(w) Effects     : n/a 
+ R(w,s) Effects   : n/a 
+ R(sw,st) Effects : n/a 
+ TC(w) Effects    : n/a 
+Some effects indicate n/a because of non-availability of relevant input
+data (or) requested to be off.
+
+   0% at 04:38:45 05/29/2025 
+
+  25% at 04:38:45 05/29/2025
+
+  50% at 04:38:45 05/29/2025
+
+  75% at 04:38:45 05/29/2025
+
+ 100% at 04:38:46 05/29/2025 
+
+Ended Parasitic Extraction: (cpu=0:00:00, real=0:00:00, mem(process/total/peak)=367.77MB/6733.25MB/2454.28MB)
+
+Hostname ee28
+
+Wall clock 16.837659
+
+CPU time 8.800130
+
+Peak memory (process): 472956928

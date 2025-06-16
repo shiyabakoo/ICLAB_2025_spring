@@ -1,0 +1,1 @@
+../02_SYN/Netlist/CPU_SYN.sdc

@@ -1,0 +1,83 @@
+{
+    "num_nets": "2",
+    "net_info": [
+        {
+            "die": "",
+            "net": "GND",
+            "nominal_voltage": "0",
+            "power_or_ground": "ground"
+        },
+        {
+            "die": "",
+            "net": "VCC",
+            "nominal_voltage": "1.79999995",
+            "power_or_ground": "power"
+        }
+    ],
+    "instance_voltage": [
+        {
+            "analysis_mode": "Avg",
+            "measurement_mode": "elapsed",
+            "min": "9.5992148691631529e-13",
+            "max": "0.0007926794933155179",
+            "average": "0.00031402549712341107",
+            "size": "84226",
+            "die": "",
+            "net": "GND"
+        },
+        {
+            "analysis_mode": "Worst",
+            "measurement_mode": "elapsed",
+            "min": "9.5992148691631529e-13",
+            "max": "0.0007926794933155179",
+            "average": "0.00031402549712341107",
+            "size": "84226",
+            "die": "",
+            "net": "GND"
+        },
+        {
+            "analysis_mode": "Avg",
+            "measurement_mode": "elapsed",
+            "min": "1.7992686033248901",
+            "max": "1.7999999523162842",
+            "average": "1.7996823091846417",
+            "size": "84226",
+            "die": "",
+            "net": "VCC"
+        },
+        {
+            "analysis_mode": "Worst",
+            "measurement_mode": "elapsed",
+            "min": "1.7992686033248901",
+            "max": "1.7999999523162842",
+            "average": "1.7996823091846417",
+            "size": "84226",
+            "die": "",
+            "net": "VCC"
+        }
+    ],
+    "effective_instance_voltage": [
+        {
+            "analysis_mode": "Avg",
+            "measurement_mode": "elapsed",
+            "min": "1.7984770082985051",
+            "max": "1.7999392369747511",
+            "average": "1.7993682236843196",
+            "size": "84218",
+            "die": "",
+            "power_net": "VCC",
+            "ground_net": "GND"
+        },
+        {
+            "analysis_mode": "Worst",
+            "measurement_mode": "elapsed",
+            "min": "1.7984770082985051",
+            "max": "1.7999392369747511",
+            "average": "1.7993682236843196",
+            "size": "84218",
+            "die": "",
+            "power_net": "VCC",
+            "ground_net": "GND"
+        }
+    ]
+}

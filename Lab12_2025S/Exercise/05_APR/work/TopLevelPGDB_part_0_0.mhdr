@@ -1,0 +1,52 @@
+* The organization, structure, and layout of this file are copyrights and
+* confidential and proprietary trade secrets of Cadence Design Systems, Inc.,
+* subject to the terms and conditions of the license agreement in effect
+* between you and Cadence Design Systems, Inc. This file and its information
+* may not be disclosed, sold, or otherwise transferred to any third party
+* without the express written consent of Cadence Design Systems, Inc. Export
+* of any or all of this file in violation of any statute or regulation is
+* strictly prohibited.
+* 
+
+FORMAT: 11.0
+PROJECT: none
+NET: GND 
+CREATOR: QX
+
+CREATED: 2025-May-29 04:38:45 (2025-May-28 20:38:45 GMT)
+
+LAYOUT_XMIN: -10
+LAYOUT_YMIN: -10
+LAYOUT_XMAX: 1830870
+LAYOUT_YMAX: 1741170
+
+NODES: 85413
+NODE_FILE: TopLevelPGDB_part_0_0.mnode
+RESISTORS: 88783
+INDUCTORS: 0
+
+LAYERS: 7
+LAYER: ME4_C M 101 TopLevelPGDB_part_0_0.ml06
+LAYER: VIA3 V 66 TopLevelPGDB_part_0_0.ml07
+LAYER: ME3_C M 662 TopLevelPGDB_part_0_0.ml08
+LAYER: VIA2 V 635 TopLevelPGDB_part_0_0.ml09
+LAYER: ME2_C M 3520 TopLevelPGDB_part_0_0.ml10
+LAYER: VIA1 V 2881 TopLevelPGDB_part_0_0.ml11
+LAYER: ME1_C M 80918 TopLevelPGDB_part_0_0.ml12
+
+CUT_LAYER: none
+GRID_CAP: false
+DIFF_CAP: false
+NUM_PINS: 0
+PINS: TopLevelPGDB_part_0_0.bmpin
+NUM_INSTANCE_TAPS: 84242
+INSTANCES: TopLevelPGDB_part_0_0.bminst
+I_LOADS:
+NODE_MAP:
+RESISTOR_MAP:
+TILE_FILE: TopLevelPGDB_part_0_0.mtile
+OUTPUT_WLT: drawn
+LAYOUT_SCALE_FACTOR: 1
+TEMPERATURE: 25
+BINARY_INST: true
+MICRON_UNITS: 1000

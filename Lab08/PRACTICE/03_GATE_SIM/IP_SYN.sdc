@@ -1,0 +1,1 @@
+../02_SYN/Netlist/IP_SYN.sdc

@@ -1,0 +1,73 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Sun May 25 20:03:23 2025                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v20.15-s105_1 (64bit) 07/27/2021 14:15 (Linux 2.6.32-431.11.2.el6.x86_64)
+#@(#)CDS: NanoRoute 20.15-s105_1 NR210726-1341/20_15-UB (database version 18.20.554) {superthreading v2.14}
+#@(#)CDS: AAE 20.15-s020 (64bit) 07/27/2021 (Linux 2.6.32-431.11.2.el6.x86_64)
+#@(#)CDS: CTE 20.15-s024_1 () Jul 23 2021 04:46:45 ( )
+#@(#)CDS: SYNTECH 20.15-s012_1 () Jul 12 2021 23:29:38 ( )
+#@(#)CDS: CPE v20.15-s071
+#@(#)CDS: IQuantus/TQuantus 20.1.1-s460 (64bit) Fri Mar 5 18:46:16 PST 2021 (Linux 2.6.32-431.11.2.el6.x86_64)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+getVersion
+win
+encMessage warning 0
+encMessage debug 0
+encMessage info 0
+is_common_ui_mode
+restoreDesign /RAID2/COURSE/2025_Spring/iclab/iclab023/Lab11/05_APR/test/CHIP.inn.dat CHIP
+setDrawView fplan
+encMessage warning 1
+encMessage debug 0
+encMessage info 1
+fit
+zoomBox -687.52400 -26.91700 2883.85200 1963.92300
+zoomBox -398.00000 41.56300 2637.67000 1733.77700
+zoomBox 60.72100 152.37900 2253.99300 1375.00400
+zoomBox 420.18800 234.65200 2004.82900 1118.00000
+panPage 0 -1
+zoomBox 547.49700 8.87900 1894.44300 759.72500
+zoomBox 655.21900 42.87900 1800.12500 681.09900
+zoomBox 747.20000 72.19500 1720.37100 614.68300
+zoomBox 826.09200 97.94100 1653.28800 559.05600
+uiSetTool ruler
+uiSetTool ruler
+zoomBox 936.21700 133.07600 1639.33400 525.02400
+zoomBox 1228.15700 223.96700 1595.18900 428.56700
+zoomBox 1275.72800 238.53200 1587.70600 412.44200
+panPage 1 0
+panPage 1 0
+panPage 1 0
+zoomBox 1588.27300 246.29400 1853.45400 394.11700
+zoomBox 1615.04800 252.82700 1840.45200 378.47700
+zoomBox 1637.86100 258.40700 1829.45500 365.21000
+zoomBox 1657.27600 263.17400 1820.13100 353.95600
+uiSetTool ruler
+zoomBox 1575.64500 245.70400 1840.82900 393.52900
+zoomBox 1494.39300 228.31600 1861.43100 432.91900
+zoomBox 1442.72300 217.25900 1874.53200 457.96800
+zoomBox 1310.41700 188.80100 1908.07800 521.96300
+zoomBox 1127.11000 147.75600 1954.32300 608.88000
+panPage 1 0
+zoomBox 1705.13900 220.78100 2072.17900 425.38500
+zoomBox 1744.60500 229.51200 2056.58900 403.42500
+zoomBox 1830.02500 248.60300 2021.62200 355.40700
+zoomBox 1772.45100 231.21700 2037.63800 379.04400
+zoomBox 1736.10300 220.16100 2048.08800 394.07500
+zoomBox 1643.65000 192.08200 2075.46400 432.79400
+zoomBox 1584.52400 174.14100 2092.54200 457.33200
+zoomBox 1514.96500 153.03300 2112.63400 486.20000
+zoomBox 1432.95900 128.03000 2136.10100 519.99200
+zoomBox 1324.13400 96.70800 2151.36100 557.84000
+zoomBox 1196.10500 59.03200 2169.31300 601.54000
+zoomBox 1313.85800 93.40100 2141.08500 554.53300
+zoomBox 1499.18100 147.61700 2096.85200 480.78500
+zoomBox 1572.00300 168.50600 2080.02400 451.69900
+uiSetTool ruler
+fit

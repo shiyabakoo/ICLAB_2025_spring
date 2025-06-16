@@ -1,0 +1,1 @@
+../Reports/GND/grid_weak_conn.rpt

@@ -1,0 +1,131 @@
+Magic 271485
+Revision Verdi_P-2019.06
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 2240 23 1920 1009 295 34
+
+; File list:
+; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
+openDirFile -d / "" "/RAID2/COURSE/2025_Spring/iclab/iclab023/Lab04/Exercise/01_RTL/ATTN.fsdb"
+
+; file time scale:
+; fileTimeScale ### s|ms|us|ns|ps
+
+; signal spacing:
+signalSpacing 5
+
+; windowTimeUnit is used for zoom, cursor & marker
+; waveform viewport range
+zoom 0.000000 1133725.000000
+cursor 270000.000000
+marker 0.000000
+
+; user define markers
+; userMarker time_pos marker_name color linestyle
+; visible top row signal index
+top 4
+; marker line index
+markerPos 58
+
+; event list
+; addEvent event_name event_expression
+; curEvent event_name
+
+
+
+COMPLEX_EVENT_BEGIN
+
+
+COMPLEX_EVENT_END
+
+
+
+; toolbar current search type
+; curSTATUS search_type
+curSTATUS ByChange
+
+
+addGroup "G1"
+activeDirFile "" "/RAID2/COURSE/2025_Spring/iclab/iclab023/Lab04/Exercise/01_RTL/ATTN.fsdb"
+addSignal -h 15 /TESTBED/clk
+addSignal -h 15 -holdScope rst_n
+addSignal -h 15 -holdScope in_valid
+addSignal -h 15 /TESTBED/u_ATTN/weight_in_valid
+addSignal -h 15 -UNSIGNED -IEEE754 /TESTBED/in_str[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope k_weight[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope q_weight[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_weight[31:0]
+addSignal -h 15 /TESTBED/u_ATTN/c_state[2:0]
+addSignal -h 15 -UNSIGNED -UDEC -holdScope counter[4:0]
+addGroup "G2" -e FALSE
+addSignal -h 15 /TESTBED/out[31:0]
+addSignal -h 15 -holdScope out_valid
+addSignal -h 15 -holdScope out_weight[31:0]
+addGroup "G3" -e FALSE
+addGroup "G4"
+addSignal -h 15 -UNSIGNED -IEEE754 /TESTBED/u_ATTN/in_str_arr[0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope k_weight_arr[0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope q_weight_arr[0:3]
+addSignal -expanded -h 15 -UNSIGNED -IEEE754 -holdScope v_weight_arr[0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_weight_arr[0][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_weight_arr[1][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_weight_arr[2][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_weight_arr[3][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope out_weight_arr[0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add3_res[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add1_res[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add2_res[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add1_a[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add1_b[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add2_a[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope add2_b[31:0]
+addGroup "G5"
+addSignal -h 15 -UNSIGNED -IEEE754 /TESTBED/u_ATTN/k_matrix[0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope q_matrix[0:4]
+addSignal -expanded -h 15 -UNSIGNED -IEEE754 -holdScope v_matrix[0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_matrix[0][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_matrix[1][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_matrix[2][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_matrix[3][0:3]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope v_matrix[4][0:3]
+addGroup "G6" -e FALSE
+addSignal -h 15 -UNSIGNED -IEEE754 /TESTBED/u_ATTN/mul1_a[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul1_b[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul2_a[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul2_b[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul3_a[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul3_b[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul4_a[31:0]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope mul4_b[31:0]
+addGroup "G7"
+addSignal -h 15 /TESTBED/u_ATTN/scoure_1_matrix[0:4]
+addSignal -expanded -h 15 -UNSIGNED -IEEE754 -holdScope scoure_2_matrix[0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope scoure_2_matrix[0][0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope scoure_2_matrix[1][0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope scoure_2_matrix[2][0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope scoure_2_matrix[3][0:4]
+addSignal -h 15 -UNSIGNED -IEEE754 -holdScope scoure_2_matrix[4][0:4]
+addGroup "G8"
+
+; getSignalForm Scope Hierarchy Status
+; active file of getSignalForm
+activeDirFile "" "/RAID2/COURSE/2025_Spring/iclab/iclab023/Lab04/Exercise/01_RTL/ATTN.fsdb"
+
+GETSIGNALFORM_SCOPE_HIERARCHY_BEGIN
+getSignalForm close
+
+"/TESTBED"
+"/TESTBED/u_ATTN"
+
+SCOPE_LIST_BEGIN
+"/TESTBED"
+"/TESTBED/u_PATTERN"
+"/TESTBED/u_ATTN"
+"/TESTBED/u_ATTN/MUL1"
+"/TESTBED/u_ATTN/ADD1"
+"/TESTBED/u_ATTN/MUL5"
+SCOPE_LIST_END
+
+GETSIGNALFORM_SCOPE_HIERARCHY_END
+
+

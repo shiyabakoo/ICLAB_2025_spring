@@ -1,0 +1,92 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Mon Jun  9 22:02:32 2025                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v20.15-s105_1 (64bit) 07/27/2021 14:15 (Linux 2.6.32-431.11.2.el6.x86_64)
+#@(#)CDS: NanoRoute 20.15-s105_1 NR210726-1341/20_15-UB (database version 18.20.554) {superthreading v2.14}
+#@(#)CDS: AAE 20.15-s020 (64bit) 07/27/2021 (Linux 2.6.32-431.11.2.el6.x86_64)
+#@(#)CDS: CTE 20.15-s024_1 () Jul 23 2021 04:46:45 ( )
+#@(#)CDS: SYNTECH 20.15-s012_1 () Jul 12 2021 23:29:38 ( )
+#@(#)CDS: CPE v20.15-s071
+#@(#)CDS: IQuantus/TQuantus 20.1.1-s460 (64bit) Fri Mar 5 18:46:16 PST 2021 (Linux 2.6.32-431.11.2.el6.x86_64)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+getVersion
+win
+encMessage warning 0
+encMessage debug 0
+encMessage info 0
+is_common_ui_mode
+restoreDesign /RAID2/COURSE/2025_Spring/iclab/iclab023/Final_Project_2025/05_APR/test/CHIP.inn.dat CHIP
+setDrawView fplan
+encMessage warning 1
+encMessage debug 0
+encMessage info 1
+fit
+zoomIn
+zoomBox 44.73000 188.48100 597.34900 466.28600
+panPage 1 0
+panPage 0 -1
+panPage 0 -1
+panPage 0 -1
+panPage 0 1
+panPage 0 1
+panPage 0 1
+panPage 1 0
+panPage 0 1
+panPage -1 0
+panPage 0 -1
+panPage 1 0
+panPage 1 0
+panPage -1 0
+setDrawView ameba
+setDrawView place
+setDrawView fplan
+setDrawView ameba
+setDrawView fplan
+uiSetTool ruler
+uiSetTool ruler
+zoomBox 401.22400 207.32200 870.95200 443.45700
+zoomBox 422.45100 223.21000 821.72000 423.92500
+zoomBox 453.76400 247.06200 742.23700 392.07900
+zoomBox 427.22400 236.68500 766.60400 407.29300
+zoomBox 395.85600 224.44000 795.12700 425.15600
+zoomBox 315.53600 193.08700 868.16100 470.89500
+zoomBox 204.23900 149.30900 969.12000 533.81900
+zoomBox 50.01900 88.71600 1108.67800 620.91000
+zoomBox -48.84100 50.40800 1196.64100 676.51900
+zoomBox 206.39100 153.29000 971.27400 537.80100
+zoomBox 268.48300 177.98800 918.63400 504.82300
+zoomBox 317.74200 200.33100 870.37100 478.14100
+zoomBox 359.61200 219.32200 829.34800 455.46100
+zoomBox 395.20200 235.46500 794.47800 436.18300
+zoomBox 451.16600 260.84900 739.64500 405.86900
+zoomBox 507.39400 286.35300 684.55600 375.41300
+uiSetTool ruler
+zoomBox 533.49800 297.05500 661.49700 361.40100
+zoomBox 552.35700 304.78600 644.83800 351.27700
+zoomBox 559.72300 307.80600 638.33200 347.32300
+zoomBox 543.14600 301.03300 651.94900 355.72900
+zoomBox 505.53100 285.57600 682.69800 374.63900
+zoomBox 467.96800 270.14900 713.18200 393.42000
+panPage 0 1
+zoomBox 482.23200 319.36100 690.66600 424.14200
+zoomBox 504.80300 338.35100 655.39800 414.05600
+zoomBox 513.97200 345.42800 641.97800 409.77700
+uiSetTool ruler
+zoomBox 505.83500 341.80000 656.43100 417.50600
+zoomBox 496.26100 337.53300 673.43400 426.59900
+zoomBox 484.99800 332.51300 693.43800 437.29700
+zoomBox 471.74800 326.60700 716.97300 449.88300
+zoomBox 452.38700 315.54700 740.88700 460.57800
+zoomBox 402.37600 287.36600 801.68600 488.10200
+zoomBox 370.38300 269.48500 840.16100 505.64500
+uiSetTool ruler
+uiSetTool ruler
+zoomBox 429.72400 301.78200 769.13900 472.40800
+getIoFlowFlag
+getFillerMode -quiet

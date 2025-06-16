@@ -1,0 +1,9 @@
+#@ # 
+#@ # Running lc_shell Version T-2022.03 for linux64 -- Feb 22, 2022
+#@ # Date:   Thu Nov 21 01:17:42 2024
+#@ # Run by: iclabTA09@ee32
+#@ 
+
+read_lib MEM_IMAGE_WC.lib
+write_lib MEM_IMAGE_WC -output MEM_IMAGE_WC.db
+exit

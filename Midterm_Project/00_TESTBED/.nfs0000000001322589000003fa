@@ -1,0 +1,1426 @@
+`ifdef RTL
+`define CYCLE_TIME 15.0
+`endif
+`ifdef GATE
+`define CYCLE_TIME 15.0
+`endif
+
+`ifdef SAMPLE
+`define FILE_NUM 3
+`define FILE_START 0
+`define PAT_NUM 2 
+`define FLAG 1 
+`define MAX_CYCLES 1000000
+`endif
+`ifdef FUNC
+`define FILE_NUM 15
+`define FILE_START 0
+`define PAT_NUM 32 
+`define FLAG 0 
+`define MAX_CYCLES 1000000
+`endif
+`ifdef PERF
+`define FILE_NUM 15             
+`define FILE_START 0
+`define PAT_NUM 5  
+`define FLAG 0 
+`define MAX_CYCLES 1000000
+`endif
+
+`include "../00_TESTBED/MEM_MAP_define.v"
+`include "../00_TESTBED/pseudo_DRAM.v"
+
+
+module PATTERN #(parameter ID_WIDTH=4, DATA_WIDTH=128, ADDR_WIDTH=32)(
+	// CHIP IO 
+	clk            	,	
+	rst_n          	,	
+	in_valid       	,	
+	frame_id        ,	
+	net_id         	,	  
+	loc_x          	,	  
+    loc_y         	,
+	cost			,
+	busy         	,
+
+	// AXI4 IO
+         awid_s_inf,
+       awaddr_s_inf,
+       awsize_s_inf,
+      awburst_s_inf,
+        awlen_s_inf,
+      awvalid_s_inf,
+      awready_s_inf,
+                    
+        wdata_s_inf,
+        wlast_s_inf,
+       wvalid_s_inf,
+       wready_s_inf,
+                    
+          bid_s_inf,
+        bresp_s_inf,
+       bvalid_s_inf,
+       bready_s_inf,
+                    
+         arid_s_inf,
+       araddr_s_inf,
+        arlen_s_inf,
+       arsize_s_inf,
+      arburst_s_inf,
+      arvalid_s_inf,
+                    
+      arready_s_inf, 
+          rid_s_inf,
+        rdata_s_inf,
+        rresp_s_inf,
+        rlast_s_inf,
+       rvalid_s_inf,
+       rready_s_inf 
+             );
+
+// ===============================================================
+//  					Input / Output 
+// ===============================================================
+
+// << CHIP io port with system >>
+output reg			  	clk,rst_n;
+output reg			   	in_valid;
+output reg [4:0] 		frame_id;
+output reg [3:0]       	net_id;     
+output reg [5:0]       	loc_x; 
+output reg [5:0]       	loc_y; 
+input [13:0]			cost;
+input                   busy;       
+ 
+// << AXI Interface wire connecttion for pseudo DRAM read/write >>
+// (1) 	axi write address channel 
+// 		src master
+input wire [ID_WIDTH-1:0]      awid_s_inf;
+input wire [ADDR_WIDTH-1:0]  awaddr_s_inf;
+input wire [2:0]             awsize_s_inf;
+input wire [1:0]            awburst_s_inf;
+input wire [7:0]              awlen_s_inf;
+input wire                  awvalid_s_inf;
+// 		src slave
+output wire                 awready_s_inf;
+// -----------------------------
+
+// (2)	axi write data channel 
+// 		src master
+input wire [DATA_WIDTH-1:0]   wdata_s_inf;
+input wire                    wlast_s_inf;
+input wire                   wvalid_s_inf;
+// 		src slave
+output wire                  wready_s_inf;
+
+// (3)	axi write response channel 
+// 		src slave
+output wire  [ID_WIDTH-1:0]     bid_s_inf;
+output wire  [1:0]            bresp_s_inf;
+output wire                  bvalid_s_inf;
+// 		src master 
+input wire                   bready_s_inf;
+// -----------------------------
+
+// (4)	axi read address channel 
+// 		src master
+input wire [ID_WIDTH-1:0]      arid_s_inf;
+input wire [ADDR_WIDTH-1:0]  araddr_s_inf;
+input wire [7:0]              arlen_s_inf;
+input wire [2:0]             arsize_s_inf;
+input wire [1:0]            arburst_s_inf;
+input wire                  arvalid_s_inf;
+// 		src slave
+output wire                 arready_s_inf;
+// -----------------------------
+
+// (5)	axi read data channel 
+// 		src slave
+output wire [ID_WIDTH-1:0]      rid_s_inf;
+output wire [DATA_WIDTH-1:0]  rdata_s_inf;
+output wire [1:0]             rresp_s_inf;
+output wire                   rlast_s_inf;
+output wire                  rvalid_s_inf;
+// 		src master
+input wire                   rready_s_inf;
+
+// ===============================================================
+//  					Parameter Declaration 
+// ===============================================================
+parameter  NUM_ROW = 64,NUM_COLUMN = 64;
+
+// -------------------------//
+//  Performance Variable    //
+//--------------------------//
+integer cur_latency,cur_length,cur_weight;
+reg cur_busy;
+reg error_flag;
+reg flag;
+integer cost_reg;
+integer total_latency,total_length,total_weight;
+integer map_file,input_file,output_file,weight_file;
+integer PATH_MAP_file,LOCATION_MAP_file,Play_file;
+wire sample_flag = `FLAG;
+// -------------------------//
+//  Data Variable		    //
+//--------------------------//
+reg [3:0] LOCATION_MAP[0:NUM_ROW-1][0:NUM_COLUMN-1];
+reg [3:0] INPUT_MAP[0:NUM_ROW-1][0:NUM_COLUMN-1];
+reg [3:0] OUTPUT_MAP[0:NUM_ROW-1][0:NUM_COLUMN-1];
+reg [3:0] WEIGHT[0:NUM_ROW-1][0:NUM_COLUMN-1];
+reg [3:0] temp;
+
+// -------------------------//
+//  Algorithm Variable	    //
+//--------------------------//
+integer NET_ID[0:15],SOURCE_X[0:15],SOURCE_Y[0:15],TARGET_X[0:15],TARGET_Y[0:15],FRAME_ID;
+integer PAT_NUM, MACRO_NUM;
+integer cur_x,cur_y,next_x,next_y,source_x,source_y,target_x,target_y;
+integer temp_addr;
+
+// -------------------------//
+//     DRAM Connection      //
+//--------------------------//
+
+pseudo_DRAM u_DRAM(
+
+  	  .clk(clk),
+  	  .rst_n(rst_n),
+
+   .   awid_s_inf(   awid_s_inf),
+   . awaddr_s_inf( awaddr_s_inf),
+   . awsize_s_inf( awsize_s_inf),
+   .awburst_s_inf(awburst_s_inf),
+   .  awlen_s_inf(  awlen_s_inf),
+   .awvalid_s_inf(awvalid_s_inf),
+   .awready_s_inf(awready_s_inf),
+
+   .  wdata_s_inf(  wdata_s_inf),
+   .  wlast_s_inf(  wlast_s_inf),
+   . wvalid_s_inf( wvalid_s_inf),
+   . wready_s_inf( wready_s_inf),
+
+   .    bid_s_inf(    bid_s_inf),
+   .  bresp_s_inf(  bresp_s_inf),
+   . bvalid_s_inf( bvalid_s_inf),
+   . bready_s_inf( bready_s_inf),
+
+   .   arid_s_inf(   arid_s_inf),
+   . araddr_s_inf( araddr_s_inf),
+   .  arlen_s_inf(  arlen_s_inf),
+   . arsize_s_inf( arsize_s_inf),
+   .arburst_s_inf(arburst_s_inf),
+   .arvalid_s_inf(arvalid_s_inf),
+   .arready_s_inf(arready_s_inf), 
+
+   .    rid_s_inf(    rid_s_inf),
+   .  rdata_s_inf(  rdata_s_inf),
+   .  rresp_s_inf(  rresp_s_inf),
+   .  rlast_s_inf(  rlast_s_inf),
+   . rvalid_s_inf( rvalid_s_inf),
+   . rready_s_inf( rready_s_inf) 
+);
+
+// ===============================================================
+//  					CLOCK GENERATION 
+// ===============================================================
+real    CYCLE = `CYCLE_TIME;
+initial clk = 0;
+always #(CYCLE/2.0) clk = ~clk;	
+
+// ===============================================================
+//  					Main Flow 
+// ===============================================================
+integer i,j,k,pat_cnt,file_cnt;
+
+initial begin
+
+	// PATH_MAP_file=$fopen("../00_TESTBED/PATH_MAP_pattern.txt","w");
+	// LOCATION_MAP_file=$fopen("../00_TESTBED/LOCATION_MAP_pattern.txt","w");
+	Play_file=$fopen("../00_TESTBED/02_result","w");
+	// Performance Initialization
+	total_latency = 0;
+	total_length = 0;
+	total_weight = 0;
+
+	for(file_cnt=`FILE_START; file_cnt< `FILE_NUM ; file_cnt = file_cnt+1)begin
+	// for(file_cnt=3; file_cnt<  4 ; file_cnt = file_cnt+1)begin
+
+		if(sample_flag) begin
+			// Change File
+			set_sample_file_task(file_cnt);
+			refresh_sample_dram_task(file_cnt);
+		end
+		else begin
+			// Change File
+			set_file_task(file_cnt);
+			refresh_dram_task(file_cnt);
+		end
+
+
+		// Signal Initialization
+		frame_id = 'bx;
+		net_id   = 'bx;
+		loc_x 	 = 'bx;
+		loc_y  	 = 'bx;
+		in_valid = 'b0;
+		rst_n = 'b1;
+		force clk = 0;
+		reset_signal_task;
+		repeat(10)#(CYCLE);	
+
+		// Start File
+		k = $fscanf(input_file,"%d",PAT_NUM);
+		//$display ("- hello -");
+		for(pat_cnt=0; pat_cnt<`PAT_NUM ; pat_cnt = pat_cnt+1)begin
+			input_task; 
+			read_input_map_task;
+			wait_out_task;
+			get_output_from_dram_task;
+			check_ans_task;	
+			repeat(3) @(negedge clk);
+			// $display ("latency %d", total_latency);
+		end 			
+	end 
+	
+	YOU_PASS_task;
+end
+
+
+// ===============================================================
+//  					Task 
+// ===============================================================
+
+// << reset_signal_task >>
+task reset_signal_task; begin 
+    repeat(3)#(CYCLE);   
+	rst_n=0;
+	
+	repeat(10)#(CYCLE);  
+	if((busy !== 'b0)) begin
+		$display ("--------------------------------------------------------------------------------------------------------------------------------------------");
+		$display ("                                                                        FAIL!                                                               ");
+		$display ("                                                  Busy should be 0 after initial RESET at %8t                                 ",$time);
+		$display ("--------------------------------------------------------------------------------------------------------------------------------------------");
+		$finish;
+	end
+	repeat(20)#(CYCLE);     rst_n=1;
+	repeat(3)#(CYCLE);      release clk;
+end endtask
+// -------------------------
+
+// << input_task >>
+task input_task;begin
+    @(negedge clk);
+	k = $fscanf(input_file,"%d",frame_id);
+	k = $fscanf(input_file,"%d",MACRO_NUM);
+	FRAME_ID = frame_id;
+	in_valid ='b1;
+	for(i=0; i<MACRO_NUM ; i = i+1)begin
+		k = $fscanf(input_file,"%d",net_id);
+		k = $fscanf(input_file,"%d",loc_x);
+		k = $fscanf(input_file,"%d",loc_y);
+		NET_ID[i] = net_id;  SOURCE_X[i] = loc_x; SOURCE_Y[i] = loc_y;
+		repeat(1) @(negedge clk);
+		k = $fscanf(input_file,"%d",loc_x);
+		k = $fscanf(input_file,"%d",loc_y);
+		TARGET_X[i] = loc_x; TARGET_Y[i] = loc_y;
+		repeat(1) @(negedge clk);
+	end
+	in_valid ='b0;
+	frame_id   ='bx;
+	net_id     ='bx;
+	loc_x     ='bx;
+	loc_y     ='bx;
+	cur_busy = 1'b1;
+end endtask
+// -------------------------
+
+// << read_input_map_task >>
+task read_input_map_task;begin
+	k = $fscanf(map_file,"%d",temp);
+	for(j=0; j<NUM_COLUMN; j = j+1)begin
+		for(i=0; i<NUM_ROW; i = i+1)begin
+			k = $fscanf(map_file,"%d",temp);
+			INPUT_MAP[i][j] = temp;
+		end
+	end
+
+	k = $fscanf(weight_file,"%d",temp);
+	for(j=0; j<NUM_COLUMN; j = j+1)begin
+		for(i=0; i<NUM_ROW; i = i+1)begin
+			k = $fscanf(weight_file,"%d",temp);
+			WEIGHT[i][j] = temp;
+		end
+	end
+end endtask
+// -------------------------
+
+// << wait_out_task >>
+task wait_out_task; begin
+	cur_latency = 0;
+	while(cur_busy)begin
+		if(cur_latency > `MAX_CYCLES)begin
+		    latency_too_long_task;
+		end
+		else begin
+			cur_latency = cur_latency+1;
+			@(negedge clk);
+		end
+	end
+	cost_reg = cost;
+end endtask
+always@(negedge busy)begin
+	cur_busy = 'b0;
+end
+// -------------------------
+
+
+// << get_output_from_dram_task >>
+parameter  DRAM_start_addr = 32'h00010000;
+task get_output_from_dram_task;
+begin
+		for(cur_y=0 ; cur_y<NUM_COLUMN ; cur_y=cur_y+1)begin
+			for(cur_x=0 ; cur_x<NUM_ROW ; cur_x=cur_x+2)begin 
+				temp_addr = DRAM_start_addr + FRAME_ID*32'h00000800 + cur_y*(NUM_ROW/2) + cur_x/2;
+				// $display ("cur_x: %d, cur_y: %d",cur_x,cur_y);
+				// $display ("DRAM_r: %d%d",u_DRAM.DRAM_r[temp_addr][3:0],u_DRAM.DRAM_r[temp_addr][7:4]);
+				// $display ("temp_addr: %d",temp_addr);
+				LOCATION_MAP[cur_x  ][cur_y] = u_DRAM.DRAM_r[temp_addr][3:0];
+				LOCATION_MAP[cur_x+1][cur_y] = u_DRAM.DRAM_r[temp_addr][7:4];
+			end
+		end
+		// write_LOCATION_MAP;
+end endtask
+// -------------------------
+
+// << check_ans_task >>
+task check_ans_task;begin
+
+	// check out_putfile
+	check_output_map_task;
+	// check consistent 
+	check_consistent_with_input_task;
+	// check conectivity
+	check_conectivity_task;
+	// check weight
+	check_weight_task;
+	
+	// update performance
+	total_length = total_length + cur_length;
+	total_latency = total_latency + cur_latency;
+	total_weight = total_weight + cur_weight;
+	$display("\033[32m PASS \033[0;38;5;111m FILE \033[4m NO.%3d \033[m \033[0;38;5;111m  PATTERN \033[4m NO.%3d \033[m \033[33m Latency: %6d Length: %3d Weight: %5d\033[m", file_cnt, pat_cnt , cur_latency, cur_length, cur_weight);
+	
+end endtask
+// -------------------------
+
+// << check_output_map_task >>
+task check_output_map_task;begin
+	k = $fscanf(output_file,"%d",temp);
+	for(j=0; j<NUM_COLUMN; j = j+1)begin
+		for(i=0; i<NUM_ROW; i = i+1)begin
+			k = $fscanf(output_file,"%d",temp);
+			OUTPUT_MAP[i][j] = temp;
+			if(LOCATION_MAP[i][j] !== temp) begin
+				// not_consitent_task(i,j,LOCATION_MAP[i][j],temp);
+			end
+		end
+	end
+	// write_OUTPUT_MAP;
+end endtask
+// -------------------------
+
+// << check_consistent_with_input_task >>
+task check_consistent_with_input_task;begin
+	for(cur_y=0 ; cur_y<NUM_COLUMN ; cur_y=cur_y+1)begin
+		for(cur_x=0 ; cur_x<NUM_ROW ; cur_x=cur_x+1)begin
+			if(INPUT_MAP[cur_x][cur_y] != 0 && INPUT_MAP[cur_x][cur_y] != LOCATION_MAP[cur_x][cur_y]) begin
+				Macro_not_consitent_task;
+			end
+			else if(INPUT_MAP[cur_x][cur_y] != 0) begin
+				flag = 0;
+				for(i=0; i<MACRO_NUM ; i = i+1)begin
+					target_x = TARGET_X[i]; target_y = TARGET_Y[i];
+					if(target_x == cur_x && target_y == cur_y)
+						flag = 1;
+				end
+				if(flag == 0)
+					LOCATION_MAP[cur_x][cur_y] = 0;
+			end
+		end
+	end
+end endtask
+// -------------------------
+
+// << check_conectivity_task >>
+task check_conectivity_task;begin
+	cur_length = 0;
+	cur_weight = 0;
+	// for(cur_y=0 ; cur_y<NUM_COLUMN ; cur_y=cur_y+1)begin
+	// 	for(cur_x=0 ; cur_x<NUM_ROW ; cur_x=cur_x+1)begin 
+	// 		$fwrite(LOCATION_MAP_file,"%2d ",LOCATION_MAP[cur_x][cur_y]); 
+	// 	end
+	// 	$fwrite(LOCATION_MAP_file,"\n"); 
+	// end
+	// $fwrite(LOCATION_MAP_file,"\n");
+	// $fwrite(LOCATION_MAP_file,"\n");
+
+	for(i=0; i<MACRO_NUM ; i = i+1)begin
+		source_x = SOURCE_X[i]; source_y = SOURCE_Y[i];
+		target_x = TARGET_X[i]; target_y = TARGET_Y[i];
+		cur_x = source_x; cur_y = source_y;
+		error_flag = 1'b0;
+		
+		while(error_flag == 1'b0 && (cur_x != target_x || cur_y != target_y)) begin
+			// $display ("NET_ID[%2d] cur_x: %d, cur_y: %d",NET_ID[i],cur_x,cur_y);
+			next_x = -1; next_y = -1;
+			if(cur_x+1<NUM_ROW) begin
+				if(LOCATION_MAP[cur_x+1][cur_y] == NET_ID[i]) begin
+					if(next_x !== -1 && next_y !== -1) begin
+						error_flag = 1'b1;
+					end
+					next_x = cur_x+1; next_y = cur_y;
+					// $display ("right");
+				end
+			end
+			if(cur_x-1>=0) begin
+				if(LOCATION_MAP[cur_x-1][cur_y] == NET_ID[i]) begin
+					if(next_x !== -1 && next_y !== -1) begin
+						error_flag = 1'b1;
+					end
+					next_x = cur_x-1; next_y = cur_y;
+					// $display ("left");
+				end
+			end
+			if(cur_y+1<NUM_COLUMN) begin
+				if(LOCATION_MAP[cur_x][cur_y+1] == NET_ID[i]) begin
+					if(next_x !== -1 && next_y !== -1) begin
+						error_flag = 1'b1;
+					end
+					next_x = cur_x; next_y = cur_y+1;
+					// $display ("up");
+				end
+			end
+			if(cur_y-1>=0) begin
+				if(LOCATION_MAP[cur_x][cur_y-1] == NET_ID[i]) begin
+					if(next_x !== -1 && next_y !== -1) begin
+						error_flag = 1'b1;
+					end
+					next_x = cur_x; next_y = cur_y-1;
+					// $display ("down");
+				end
+			end
+			// $display ("next_x: %d, next_y: %d",next_x,next_y);
+			if(next_x == -1 && next_y == -1) begin
+				error_flag = 1'b1;
+			end
+			else begin
+				cur_x = next_x; cur_y = next_y;
+				cur_length = cur_length + 1;
+				cur_weight = cur_weight + WEIGHT[cur_x][cur_y];				
+				LOCATION_MAP[cur_x][cur_y] = 0;
+			end
+		end
+		if(error_flag == 1'b1) begin
+			// {id} can not find path from source to taget error
+			Connectivity_fail_task(NET_ID[i],source_x,source_y,target_x,target_y);
+		end
+		cur_length = cur_length - 1;
+		cur_weight = cur_weight - WEIGHT[cur_x][cur_y];	
+	end
+	
+end endtask
+// -------------------------
+
+// << check_weight_task >>
+task check_weight_task;begin
+	if(cur_weight !== cost_reg) begin
+		weight_fail_task;
+	end
+end endtask
+// -------------------------
+
+
+always@(*)begin
+    if(in_valid && busy)begin
+		$display ("--------------------------------------------------------------------------------------------------------------------------------------------");
+		$display ("                                                                    SPEC FAIL!                                                               ");
+		$display ("                                                        busy should not overlap with in_valid                                               ");
+		$display ("--------------------------------------------------------------------------------------------------------------------------------------------");
+		repeat(9) @(negedge clk);
+		$finish;	
+	end
+end
+
+// always@(*)begin
+//     if(busy === 1'b0 && weight !== 0)begin
+// 		$display ("--------------------------------------------------------------------------------------------------------------------------------------------");
+// 		$display ("                                                                     SPEC FAIL!                                                              ");
+// 		$display ("                                                        weight should not 0 when busy is low                                               ");
+// 		$display ("--------------------------------------------------------------------------------------------------------------------------------------------");
+// 		repeat(9) @(negedge clk);
+// 		$finish;	
+// 	end
+// end
+
+task latency_too_long_task;begin
+$display ("----------------------------------------------------------------------------------------------------------------------");
+$display ("                                                Latence FAIL!                						                  ");
+$display ("                                           Latency over %d cycles!          						            ",`MAX_CYCLES);
+$display ("----------------------------------------------------------------------------------------------------------------------");
+repeat(2)@(negedge clk);
+$finish;	
+end endtask
+
+task Macro_not_consitent_task;begin
+$display ("----------------------------------------------------------------------------------------------------------------------");
+$display ("                                              Consistence FAIL!                						                        ");
+$display ("                                   Macro location is not consistent with input!               						 ");
+$display ("----------------------------------------------------------------------------------------------------------------------");
+repeat(2)@(negedge clk);
+$finish;	
+end endtask
+
+task not_consitent_task;
+input integer a,b,c,d;
+begin
+$display ("----------------------------------------------------------------------------------------------------------------------");
+$display ("                                                  FAIL!                						                        ");
+$display ("                             (%2d,%2d)  LOCATION_MAP (%2d) !== OUTPUT_MAP (%2d) !         						    ",a,b,c,d);
+$display ("----------------------------------------------------------------------------------------------------------------------");
+repeat(2)@(negedge clk);
+// $finish;	
+end endtask
+
+task Connectivity_fail_task;
+input integer id,s_x,s_y,t_x,t_y;
+begin
+$display ("----------------------------------------------------------------------------------------------------------------------");
+$display ("                                            Connectivity FAIL!                						                ");
+$display ("                       ID: %2d can not find path from source (%2d,%2d) to taget (%2d,%2d) or multiple path!          						",id,s_x,s_y,t_x,t_y);
+$display ("----------------------------------------------------------------------------------------------------------------------");
+repeat(2)@(negedge clk);
+$finish;	
+end endtask
+
+task weight_fail_task;begin
+$display ("----------------------------------------------------------------------------------------------------------------------");
+$display ("                                                Weight FAIL!                						                        ");
+$display ("                                   Output weight %d !== Your routed weight %d!               						 ", cost_reg,cur_weight);
+$display ("----------------------------------------------------------------------------------------------------------------------");
+repeat(2)@(negedge clk);
+$finish;	
+end endtask
+
+task YOU_PASS_task;begin
+$display ("----------------------------------------------------------------------------------------------------------------------");
+$display ("                                                  Congratulations!                						            ");
+$display ("                                           You have passed all patterns!          						            ");
+$display ("                                           Your execution cycles = %5d cycles   						            ", total_latency);
+$display ("                                           Your clock period = %.1f ns        					                ", CYCLE);
+$display ("                                           Total Latency = %.1f ns         						            ", total_latency*CYCLE);
+$display ("                                           Total Length = %d         						            ", total_length);
+$display ("                                           Total Weight = %d         						            ", total_weight);
+$display ("----------------------------------------------------------------------------------------------------------------------");
+
+
+// $fwrite(Play_file,"python ../00_TESTBED/play/play.py");
+$finish;	
+end endtask
+
+
+task write_LOCATION_MAP;begin
+	$write("Your LOCATION_MAP in DRAM: \n");
+	for(j=0; j<NUM_COLUMN; j = j+1)begin
+		for(i=0; i<NUM_ROW; i = i+1)begin
+			if(LOCATION_MAP[i][j]!==0)
+				$write ("\033[38;5;%3dm%2d \033[m",16+3*36+2*6+2*LOCATION_MAP[i][j],LOCATION_MAP[i][j]);
+			else
+				$write ("%2d ",LOCATION_MAP[i][j]);
+			if(i===NUM_ROW-1)
+				$write("\n");
+		end
+	end
+
+end endtask
+
+task write_OUTPUT_MAP;begin
+	$write("Golden_Routing_Result: (shining means different)\n");
+	for(j=0; j<NUM_COLUMN; j = j+1)begin
+		for(i=0; i<NUM_ROW; i = i+1)begin
+			if(OUTPUT_MAP[i][j]!==LOCATION_MAP[i][j])
+				$write ("\033[5m");
+			if(OUTPUT_MAP[i][j]!==0)
+				$write ("\033[38;5;%3dm%2d \033[m",16+3*36+2*6+2*OUTPUT_MAP[i][j],OUTPUT_MAP[i][j]);
+			else
+				$write ("%2d \033[m",OUTPUT_MAP[i][j]);
+			if(i===NUM_ROW-1)
+				$write("\n");
+		end
+	end
+repeat(2)@(negedge clk);
+end endtask
+
+// << set_sample_file_task >>
+task set_sample_file_task;
+input integer index;
+begin
+	case(index)
+			0 : begin
+				map_file			=		$fopen(		"../00_TESTBED/For_student/TEST_CASE/map_0.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/For_student/TEST_CASE/input_0.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/For_student/TEST_CASE/output_0.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/For_student/TEST_CASE/weight_0.txt","r");
+				end
+			1 : begin
+				map_file			=		$fopen(		"../00_TESTBED/For_student/TEST_CASE/map_1.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/For_student/TEST_CASE/input_1.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/For_student/TEST_CASE/output_1.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/For_student/TEST_CASE/weight_1.txt","r");
+				end
+			2 : begin
+				map_file			=		$fopen(		"../00_TESTBED/For_student/TEST_CASE/map_2.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/For_student/TEST_CASE/input_2.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/For_student/TEST_CASE/output_2.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/For_student/TEST_CASE/weight_2.txt","r");	
+				end	
+	endcase	
+end
+endtask
+// -------------------------
+// << refresh_sample_dram_task >>
+task refresh_sample_dram_task;
+input integer index;
+begin
+	case(index)
+        0 : $readmemh("../00_TESTBED/For_student/DRAM/dram_0.dat", u_DRAM.DRAM_r);
+		1 : $readmemh("../00_TESTBED/For_student/DRAM/dram_1.dat", u_DRAM.DRAM_r);
+		2 : $readmemh("../00_TESTBED/For_student/DRAM/dram_2.dat", u_DRAM.DRAM_r);
+	endcase	
+end
+endtask		
+// -------------------------
+
+// << refresh_dram_task >>
+task refresh_dram_task;
+input integer index;
+begin
+	case(index)
+        0 : $readmemh("../00_TESTBED/DRAM/dram_0.dat", u_DRAM.DRAM_r);
+		1 : $readmemh("../00_TESTBED/DRAM/dram_1.dat", u_DRAM.DRAM_r);
+		2 : $readmemh("../00_TESTBED/DRAM/dram_2.dat", u_DRAM.DRAM_r);
+		3 : $readmemh("../00_TESTBED/DRAM/dram_3.dat", u_DRAM.DRAM_r);
+		4 : $readmemh("../00_TESTBED/DRAM/dram_4.dat", u_DRAM.DRAM_r);
+		5 : $readmemh("../00_TESTBED/DRAM/dram_5.dat", u_DRAM.DRAM_r);
+		6 : $readmemh("../00_TESTBED/DRAM/dram_6.dat", u_DRAM.DRAM_r);
+		7 : $readmemh("../00_TESTBED/DRAM/dram_7.dat", u_DRAM.DRAM_r);
+		8 : $readmemh("../00_TESTBED/DRAM/dram_8.dat", u_DRAM.DRAM_r);
+		9 : $readmemh("../00_TESTBED/DRAM/dram_9.dat", u_DRAM.DRAM_r);
+		10 : $readmemh("../00_TESTBED/DRAM/dram_10.dat", u_DRAM.DRAM_r);
+		11 : $readmemh("../00_TESTBED/DRAM/dram_11.dat", u_DRAM.DRAM_r);
+		12 : $readmemh("../00_TESTBED/DRAM/dram_12.dat", u_DRAM.DRAM_r);
+		13 : $readmemh("../00_TESTBED/DRAM/dram_13.dat", u_DRAM.DRAM_r);
+		14 : $readmemh("../00_TESTBED/DRAM/dram_14.dat", u_DRAM.DRAM_r);
+		15 : $readmemh("../00_TESTBED/DRAM/dram_15.dat", u_DRAM.DRAM_r);
+		16 : $readmemh("../00_TESTBED/DRAM/dram_16.dat", u_DRAM.DRAM_r);
+		17 : $readmemh("../00_TESTBED/DRAM/dram_17.dat", u_DRAM.DRAM_r);
+		18 : $readmemh("../00_TESTBED/DRAM/dram_18.dat", u_DRAM.DRAM_r);
+		19 : $readmemh("../00_TESTBED/DRAM/dram_19.dat", u_DRAM.DRAM_r);
+		20 : $readmemh("../00_TESTBED/DRAM/dram_20.dat", u_DRAM.DRAM_r);
+		21 : $readmemh("../00_TESTBED/DRAM/dram_21.dat", u_DRAM.DRAM_r);
+		22 : $readmemh("../00_TESTBED/DRAM/dram_22.dat", u_DRAM.DRAM_r);
+		23 : $readmemh("../00_TESTBED/DRAM/dram_23.dat", u_DRAM.DRAM_r);
+		24 : $readmemh("../00_TESTBED/DRAM/dram_24.dat", u_DRAM.DRAM_r);
+		25 : $readmemh("../00_TESTBED/DRAM/dram_25.dat", u_DRAM.DRAM_r);
+		26 : $readmemh("../00_TESTBED/DRAM/dram_26.dat", u_DRAM.DRAM_r);
+		27 : $readmemh("../00_TESTBED/DRAM/dram_27.dat", u_DRAM.DRAM_r);
+		28 : $readmemh("../00_TESTBED/DRAM/dram_28.dat", u_DRAM.DRAM_r);
+		29 : $readmemh("../00_TESTBED/DRAM/dram_29.dat", u_DRAM.DRAM_r);
+		30 : $readmemh("../00_TESTBED/DRAM/dram_30.dat", u_DRAM.DRAM_r);
+		31 : $readmemh("../00_TESTBED/DRAM/dram_31.dat", u_DRAM.DRAM_r);
+		32 : $readmemh("../00_TESTBED/DRAM/dram_32.dat", u_DRAM.DRAM_r);
+		33 : $readmemh("../00_TESTBED/DRAM/dram_33.dat", u_DRAM.DRAM_r);
+		34 : $readmemh("../00_TESTBED/DRAM/dram_34.dat", u_DRAM.DRAM_r);
+		35 : $readmemh("../00_TESTBED/DRAM/dram_35.dat", u_DRAM.DRAM_r);
+		36 : $readmemh("../00_TESTBED/DRAM/dram_36.dat", u_DRAM.DRAM_r);
+		37 : $readmemh("../00_TESTBED/DRAM/dram_37.dat", u_DRAM.DRAM_r);
+		38 : $readmemh("../00_TESTBED/DRAM/dram_38.dat", u_DRAM.DRAM_r);
+		39 : $readmemh("../00_TESTBED/DRAM/dram_39.dat", u_DRAM.DRAM_r);
+		40 : $readmemh("../00_TESTBED/DRAM/dram_40.dat", u_DRAM.DRAM_r);
+		41 : $readmemh("../00_TESTBED/DRAM/dram_41.dat", u_DRAM.DRAM_r);
+		42 : $readmemh("../00_TESTBED/DRAM/dram_42.dat", u_DRAM.DRAM_r);
+		43 : $readmemh("../00_TESTBED/DRAM/dram_43.dat", u_DRAM.DRAM_r);
+		44 : $readmemh("../00_TESTBED/DRAM/dram_44.dat", u_DRAM.DRAM_r);
+		45 : $readmemh("../00_TESTBED/DRAM/dram_45.dat", u_DRAM.DRAM_r);
+		46 : $readmemh("../00_TESTBED/DRAM/dram_46.dat", u_DRAM.DRAM_r);
+		47 : $readmemh("../00_TESTBED/DRAM/dram_47.dat", u_DRAM.DRAM_r);
+		48 : $readmemh("../00_TESTBED/DRAM/dram_48.dat", u_DRAM.DRAM_r);
+		49 : $readmemh("../00_TESTBED/DRAM/dram_49.dat", u_DRAM.DRAM_r);
+		50 : $readmemh("../00_TESTBED/DRAM/dram_50.dat", u_DRAM.DRAM_r);
+		51 : $readmemh("../00_TESTBED/DRAM/dram_51.dat", u_DRAM.DRAM_r);
+		52 : $readmemh("../00_TESTBED/DRAM/dram_52.dat", u_DRAM.DRAM_r);
+		53 : $readmemh("../00_TESTBED/DRAM/dram_53.dat", u_DRAM.DRAM_r);
+		54 : $readmemh("../00_TESTBED/DRAM/dram_54.dat", u_DRAM.DRAM_r);
+		55 : $readmemh("../00_TESTBED/DRAM/dram_55.dat", u_DRAM.DRAM_r);
+		56 : $readmemh("../00_TESTBED/DRAM/dram_56.dat", u_DRAM.DRAM_r);
+		57 : $readmemh("../00_TESTBED/DRAM/dram_57.dat", u_DRAM.DRAM_r);
+		58 : $readmemh("../00_TESTBED/DRAM/dram_58.dat", u_DRAM.DRAM_r);
+		59 : $readmemh("../00_TESTBED/DRAM/dram_59.dat", u_DRAM.DRAM_r);
+		60 : $readmemh("../00_TESTBED/DRAM/dram_60.dat", u_DRAM.DRAM_r);
+		61 : $readmemh("../00_TESTBED/DRAM/dram_61.dat", u_DRAM.DRAM_r);
+		62 : $readmemh("../00_TESTBED/DRAM/dram_62.dat", u_DRAM.DRAM_r);
+		63 : $readmemh("../00_TESTBED/DRAM/dram_63.dat", u_DRAM.DRAM_r);
+		64 : $readmemh("../00_TESTBED/DRAM/dram_64.dat", u_DRAM.DRAM_r);
+		65 : $readmemh("../00_TESTBED/DRAM/dram_65.dat", u_DRAM.DRAM_r);
+		66 : $readmemh("../00_TESTBED/DRAM/dram_66.dat", u_DRAM.DRAM_r);
+		67 : $readmemh("../00_TESTBED/DRAM/dram_67.dat", u_DRAM.DRAM_r);
+		68 : $readmemh("../00_TESTBED/DRAM/dram_68.dat", u_DRAM.DRAM_r);
+		69 : $readmemh("../00_TESTBED/DRAM/dram_69.dat", u_DRAM.DRAM_r);
+		70 : $readmemh("../00_TESTBED/DRAM/dram_70.dat", u_DRAM.DRAM_r);
+		71 : $readmemh("../00_TESTBED/DRAM/dram_71.dat", u_DRAM.DRAM_r);
+		72 : $readmemh("../00_TESTBED/DRAM/dram_72.dat", u_DRAM.DRAM_r);
+		73 : $readmemh("../00_TESTBED/DRAM/dram_73.dat", u_DRAM.DRAM_r);
+		74 : $readmemh("../00_TESTBED/DRAM/dram_74.dat", u_DRAM.DRAM_r);
+		75 : $readmemh("../00_TESTBED/DRAM/dram_75.dat", u_DRAM.DRAM_r);
+		76 : $readmemh("../00_TESTBED/DRAM/dram_76.dat", u_DRAM.DRAM_r);
+		77 : $readmemh("../00_TESTBED/DRAM/dram_77.dat", u_DRAM.DRAM_r);
+		78 : $readmemh("../00_TESTBED/DRAM/dram_78.dat", u_DRAM.DRAM_r);
+		79 : $readmemh("../00_TESTBED/DRAM/dram_79.dat", u_DRAM.DRAM_r);
+		80 : $readmemh("../00_TESTBED/DRAM/dram_80.dat", u_DRAM.DRAM_r);
+		81 : $readmemh("../00_TESTBED/DRAM/dram_81.dat", u_DRAM.DRAM_r);
+		82 : $readmemh("../00_TESTBED/DRAM/dram_82.dat", u_DRAM.DRAM_r);
+		83 : $readmemh("../00_TESTBED/DRAM/dram_83.dat", u_DRAM.DRAM_r);
+		84 : $readmemh("../00_TESTBED/DRAM/dram_84.dat", u_DRAM.DRAM_r);
+		85 : $readmemh("../00_TESTBED/DRAM/dram_85.dat", u_DRAM.DRAM_r);
+		86 : $readmemh("../00_TESTBED/DRAM/dram_86.dat", u_DRAM.DRAM_r);
+		87 : $readmemh("../00_TESTBED/DRAM/dram_87.dat", u_DRAM.DRAM_r);
+		88 : $readmemh("../00_TESTBED/DRAM/dram_88.dat", u_DRAM.DRAM_r);
+		89 : $readmemh("../00_TESTBED/DRAM/dram_89.dat", u_DRAM.DRAM_r);
+		90 : $readmemh("../00_TESTBED/DRAM/dram_90.dat", u_DRAM.DRAM_r);
+		91 : $readmemh("../00_TESTBED/DRAM/dram_91.dat", u_DRAM.DRAM_r);
+		92 : $readmemh("../00_TESTBED/DRAM/dram_92.dat", u_DRAM.DRAM_r);
+		93 : $readmemh("../00_TESTBED/DRAM/dram_93.dat", u_DRAM.DRAM_r);
+		94 : $readmemh("../00_TESTBED/DRAM/dram_94.dat", u_DRAM.DRAM_r);
+		95 : $readmemh("../00_TESTBED/DRAM/dram_95.dat", u_DRAM.DRAM_r);
+		96 : $readmemh("../00_TESTBED/DRAM/dram_96.dat", u_DRAM.DRAM_r);
+		97 : $readmemh("../00_TESTBED/DRAM/dram_97.dat", u_DRAM.DRAM_r);
+		98 : $readmemh("../00_TESTBED/DRAM/dram_98.dat", u_DRAM.DRAM_r);
+		99 : $readmemh("../00_TESTBED/DRAM/dram_99.dat", u_DRAM.DRAM_r);
+    endcase	
+end
+endtask
+// -------------------------
+
+// << set_file_task >>
+task set_file_task;
+input integer index;
+begin
+	case(index)
+			0 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_0.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_0.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_0.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_0.txt","r");
+			end
+			1 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_1.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_1.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_1.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_1.txt","r");
+			end
+			2 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_2.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_2.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_2.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_2.txt","r");
+			end
+			3 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_3.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_3.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_3.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_3.txt","r");
+			end
+			4 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_4.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_4.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_4.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_4.txt","r");
+			end
+			5 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_5.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_5.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_5.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_5.txt","r");
+			end
+			6 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_6.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_6.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_6.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_6.txt","r");
+			end
+			7 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_7.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_7.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_7.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_7.txt","r");
+			end
+			8 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_8.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_8.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_8.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_8.txt","r");
+			end
+			9 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_9.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_9.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_9.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_9.txt","r");
+			end
+			10 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_10.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_10.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_10.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_10.txt","r");
+			end
+			11 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_11.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_11.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_11.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_11.txt","r");
+			end
+			12 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_12.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_12.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_12.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_12.txt","r");
+			end
+			13 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_13.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_13.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_13.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_13.txt","r");
+			end
+			14 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_14.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_14.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_14.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_14.txt","r");
+			end
+			15 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_15.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_15.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_15.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_15.txt","r");
+			end
+			16 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_16.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_16.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_16.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_16.txt","r");
+			end
+			17 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_17.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_17.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_17.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_17.txt","r");
+			end
+			18 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_18.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_18.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_18.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_18.txt","r");
+			end
+			19 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_19.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_19.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_19.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_19.txt","r");
+			end
+			20 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_20.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_20.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_20.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_20.txt","r");
+			end
+			21 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_21.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_21.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_21.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_21.txt","r");
+			end
+			22 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_22.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_22.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_22.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_22.txt","r");
+			end
+			23 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_23.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_23.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_23.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_23.txt","r");
+			end
+			24 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_24.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_24.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_24.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_24.txt","r");
+			end
+			25 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_25.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_25.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_25.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_25.txt","r");
+			end
+			26 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_26.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_26.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_26.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_26.txt","r");
+			end
+			27 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_27.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_27.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_27.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_27.txt","r");
+			end
+			28 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_28.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_28.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_28.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_28.txt","r");
+			end
+			29 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_29.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_29.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_29.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_29.txt","r");
+			end
+			30 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_30.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_30.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_30.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_30.txt","r");
+			end
+			31 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_31.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_31.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_31.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_31.txt","r");
+			end
+			32 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_32.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_32.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_32.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_32.txt","r");
+			end
+			33 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_33.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_33.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_33.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_33.txt","r");
+			end
+			34 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_34.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_34.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_34.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_34.txt","r");
+			end
+			35 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_35.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_35.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_35.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_35.txt","r");
+			end
+			36 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_36.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_36.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_36.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_36.txt","r");
+			end
+			37 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_37.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_37.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_37.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_37.txt","r");
+			end
+			38 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_38.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_38.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_38.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_38.txt","r");
+			end
+			39 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_39.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_39.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_39.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_39.txt","r");
+			end
+			40 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_40.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_40.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_40.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_40.txt","r");
+			end
+			41 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_41.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_41.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_41.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_41.txt","r");
+			end
+			42 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_42.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_42.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_42.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_42.txt","r");
+			end
+			43 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_43.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_43.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_43.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_43.txt","r");
+			end
+			44 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_44.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_44.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_44.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_44.txt","r");
+			end
+			45 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_45.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_45.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_45.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_45.txt","r");
+			end
+			46 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_46.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_46.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_46.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_46.txt","r");
+			end
+			47 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_47.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_47.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_47.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_47.txt","r");
+			end
+			48 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_48.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_48.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_48.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_48.txt","r");
+			end
+			49 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_49.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_49.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_49.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_49.txt","r");
+			end
+			50 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_50.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_50.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_50.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_50.txt","r");
+			end
+			51 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_51.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_51.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_51.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_51.txt","r");
+			end
+			52 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_52.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_52.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_52.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_52.txt","r");
+			end
+			53 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_53.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_53.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_53.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_53.txt","r");
+			end
+			54 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_54.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_54.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_54.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_54.txt","r");
+			end
+			55 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_55.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_55.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_55.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_55.txt","r");
+			end
+			56 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_56.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_56.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_56.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_56.txt","r");
+			end
+			57 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_57.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_57.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_57.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_57.txt","r");
+			end
+			58 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_58.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_58.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_58.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_58.txt","r");
+			end
+			59 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_59.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_59.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_59.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_59.txt","r");
+			end
+			60 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_60.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_60.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_60.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_60.txt","r");
+			end
+			61 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_61.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_61.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_61.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_61.txt","r");
+			end
+			62 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_62.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_62.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_62.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_62.txt","r");
+			end
+			63 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_63.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_63.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_63.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_63.txt","r");
+			end
+			64 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_64.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_64.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_64.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_64.txt","r");
+			end
+			65 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_65.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_65.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_65.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_65.txt","r");
+			end
+			66 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_66.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_66.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_66.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_66.txt","r");
+			end
+			67 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_67.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_67.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_67.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_67.txt","r");
+			end
+			68 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_68.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_68.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_68.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_68.txt","r");
+			end
+			69 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_69.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_69.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_69.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_69.txt","r");
+			end
+			70 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_70.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_70.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_70.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_70.txt","r");
+			end
+			71 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_71.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_71.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_71.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_71.txt","r");
+			end
+			72 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_72.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_72.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_72.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_72.txt","r");
+			end
+			73 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_73.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_73.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_73.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_73.txt","r");
+			end
+			74 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_74.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_74.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_74.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_74.txt","r");
+			end
+			75 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_75.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_75.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_75.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_75.txt","r");
+			end
+			76 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_76.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_76.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_76.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_76.txt","r");
+			end
+			77 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_77.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_77.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_77.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_77.txt","r");
+			end
+			78 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_78.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_78.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_78.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_78.txt","r");
+			end
+			79 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_79.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_79.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_79.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_79.txt","r");
+			end
+			80 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_80.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_80.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_80.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_80.txt","r");
+			end
+			81 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_81.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_81.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_81.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_81.txt","r");
+			end
+			82 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_82.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_82.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_82.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_82.txt","r");
+			end
+			83 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_83.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_83.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_83.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_83.txt","r");
+			end
+			84 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_84.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_84.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_84.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_84.txt","r");
+			end
+			85 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_85.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_85.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_85.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_85.txt","r");
+			end
+			86 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_86.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_86.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_86.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_86.txt","r");
+			end
+			87 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_87.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_87.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_87.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_87.txt","r");
+			end
+			88 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_88.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_88.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_88.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_88.txt","r");
+			end
+			89 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_89.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_89.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_89.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_89.txt","r");
+			end
+			90 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_90.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_90.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_90.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_90.txt","r");
+			end
+			91 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_91.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_91.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_91.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_91.txt","r");
+			end
+			92 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_92.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_92.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_92.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_92.txt","r");
+			end
+			93 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_93.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_93.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_93.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_93.txt","r");
+			end
+			94 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_94.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_94.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_94.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_94.txt","r");
+			end
+			95 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_95.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_95.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_95.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_95.txt","r");
+			end
+			96 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_96.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_96.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_96.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_96.txt","r");
+			end
+			97 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_97.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_97.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_97.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_97.txt","r");
+			end
+			98 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_98.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_98.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_98.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_98.txt","r");
+			end
+			99 : begin
+				map_file			=		$fopen(		"../00_TESTBED/TEST_CASE/map_99.txt","r");
+				input_file			=		$fopen(	  "../00_TESTBED/TEST_CASE/input_99.txt","r");
+				output_file			=		$fopen(  "../00_TESTBED/TEST_CASE/output_99.txt","r");
+				weight_file			=		$fopen(  "../00_TESTBED/TEST_CASE/weight_99.txt","r");
+			end
+
+    endcase	
+end
+endtask
+
+endmodule
+

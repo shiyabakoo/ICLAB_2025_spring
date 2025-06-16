@@ -1,0 +1,1 @@
+../02_SYN/Netlist/SMM_SYN.v

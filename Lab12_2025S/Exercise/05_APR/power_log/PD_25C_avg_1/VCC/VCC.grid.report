@@ -1,0 +1,1111 @@
+- Cell: AN2 Tag: 
+ Temperature: 25
+* Cell: AN2 Pin: VCC Instantiation: 24 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2B1 Tag: 
+ Temperature: 25
+* Cell: AN2B1 Pin: VCC Instantiation: 53 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2B1P Tag: 
+ Temperature: 25
+* Cell: AN2B1P Pin: VCC Instantiation: 26 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2B1S Tag: 
+ Temperature: 25
+* Cell: AN2B1S Pin: VCC Instantiation: 108 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2B1T Tag: 
+ Temperature: 25
+* Cell: AN2B1T Pin: VCC Instantiation: 6 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2P Tag: 
+ Temperature: 25
+* Cell: AN2P Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2S Tag: 
+ Temperature: 25
+* Cell: AN2S Pin: VCC Instantiation: 102 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN2T Tag: 
+ Temperature: 25
+* Cell: AN2T Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3B2 Tag: 
+ Temperature: 25
+* Cell: AN3B2 Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3B2P Tag: 
+ Temperature: 25
+* Cell: AN3B2P Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3B2S Tag: 
+ Temperature: 25
+* Cell: AN3B2S Pin: VCC Instantiation: 18 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3B2T Tag: 
+ Temperature: 25
+* Cell: AN3B2T Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3P Tag: 
+ Temperature: 25
+* Cell: AN3P Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3S Tag: 
+ Temperature: 25
+* Cell: AN3S Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN3T Tag: 
+ Temperature: 25
+* Cell: AN3T Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN4B1 Tag: 
+ Temperature: 25
+* Cell: AN4B1 Pin: VCC Instantiation: 17 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN4B1S Tag: 
+ Temperature: 25
+* Cell: AN4B1S Pin: VCC Instantiation: 496 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AN4S Tag: 
+ Temperature: 25
+* Cell: AN4S Pin: VCC Instantiation: 8 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AO112 Tag: 
+ Temperature: 25
+* Cell: AO112 Pin: VCC Instantiation: 4 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AO112S Tag: 
+ Temperature: 25
+* Cell: AO112S Pin: VCC Instantiation: 11 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AO12S Tag: 
+ Temperature: 25
+* Cell: AO12S Pin: VCC Instantiation: 103 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AO22 Tag: 
+ Temperature: 25
+* Cell: AO22 Pin: VCC Instantiation: 7 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AO22S Tag: 
+ Temperature: 25
+* Cell: AO22S Pin: VCC Instantiation: 13 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AOI12HS Tag: 
+ Temperature: 25
+* Cell: AOI12HS Pin: VCC Instantiation: 9 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AOI13H Tag: 
+ Temperature: 25
+* Cell: AOI13H Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AOI13HS Tag: 
+ Temperature: 25
+* Cell: AOI13HS Pin: VCC Instantiation: 706 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AOI22H Tag: 
+ Temperature: 25
+* Cell: AOI22H Pin: VCC Instantiation: 57 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: AOI22S Tag: 
+ Temperature: 25
+* Cell: AOI22S Pin: VCC Instantiation: 6150 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF1 Tag: 
+ Temperature: 25
+* Cell: BUF1 Pin: VCC Instantiation: 643 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF12CK Tag: 
+ Temperature: 25
+* Cell: BUF12CK Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF1CK Tag: 
+ Temperature: 25
+* Cell: BUF1CK Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF1S Tag: 
+ Temperature: 25
+* Cell: BUF1S Pin: VCC Instantiation: 10 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF2 Tag: 
+ Temperature: 25
+* Cell: BUF2 Pin: VCC Instantiation: 260 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF3 Tag: 
+ Temperature: 25
+* Cell: BUF3 Pin: VCC Instantiation: 66 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF4 Tag: 
+ Temperature: 25
+* Cell: BUF4 Pin: VCC Instantiation: 25 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: BUF6 Tag: 
+ Temperature: 25
+* Cell: BUF6 Pin: VCC Instantiation: 18 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FA1 Tag: 
+ Temperature: 25
+* Cell: FA1 Pin: VCC Instantiation: 112 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FA1P Tag: 
+ Temperature: 25
+* Cell: FA1P Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FA1S Tag: 
+ Temperature: 25
+* Cell: FA1S Pin: VCC Instantiation: 19 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER1 Tag: 
+ Temperature: 25
+* Cell: FILLER1 Pin: VCC Instantiation: 12884 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER16 Tag: 
+ Temperature: 25
+* Cell: FILLER16 Pin: VCC Instantiation: 3608 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER2 Tag: 
+ Temperature: 25
+* Cell: FILLER2 Pin: VCC Instantiation: 13081 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER32 Tag: 
+ Temperature: 25
+* Cell: FILLER32 Pin: VCC Instantiation: 641 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER4 Tag: 
+ Temperature: 25
+* Cell: FILLER4 Pin: VCC Instantiation: 13201 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER64 Tag: 
+ Temperature: 25
+* Cell: FILLER64 Pin: VCC Instantiation: 2021 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: FILLER8 Tag: 
+ Temperature: 25
+* Cell: FILLER8 Pin: VCC Instantiation: 12491 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV1 Tag: 
+ Temperature: 25
+* Cell: INV1 Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV12CK Tag: 
+ Temperature: 25
+* Cell: INV12CK Pin: VCC Instantiation: 16 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV1S Tag: 
+ Temperature: 25
+* Cell: INV1S Pin: VCC Instantiation: 1712 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV2 Tag: 
+ Temperature: 25
+* Cell: INV2 Pin: VCC Instantiation: 660 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV2CK Tag: 
+ Temperature: 25
+* Cell: INV2CK Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV3 Tag: 
+ Temperature: 25
+* Cell: INV3 Pin: VCC Instantiation: 112 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV3CK Tag: 
+ Temperature: 25
+* Cell: INV3CK Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV4 Tag: 
+ Temperature: 25
+* Cell: INV4 Pin: VCC Instantiation: 30 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV4CK Tag: 
+ Temperature: 25
+* Cell: INV4CK Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV6 Tag: 
+ Temperature: 25
+* Cell: INV6 Pin: VCC Instantiation: 8 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV6CK Tag: 
+ Temperature: 25
+* Cell: INV6CK Pin: VCC Instantiation: 6 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV8 Tag: 
+ Temperature: 25
+* Cell: INV8 Pin: VCC Instantiation: 5 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: INV8CK Tag: 
+ Temperature: 25
+* Cell: INV8CK Pin: VCC Instantiation: 10 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MAO222 Tag: 
+ Temperature: 25
+* Cell: MAO222 Pin: VCC Instantiation: 144 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MAO222P Tag: 
+ Temperature: 25
+* Cell: MAO222P Pin: VCC Instantiation: 9 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MAO222S Tag: 
+ Temperature: 25
+* Cell: MAO222S Pin: VCC Instantiation: 14 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MAOI1 Tag: 
+ Temperature: 25
+* Cell: MAOI1 Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MAOI1S Tag: 
+ Temperature: 25
+* Cell: MAOI1S Pin: VCC Instantiation: 10 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MOAI1 Tag: 
+ Temperature: 25
+* Cell: MOAI1 Pin: VCC Instantiation: 278 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MOAI1H Tag: 
+ Temperature: 25
+* Cell: MOAI1H Pin: VCC Instantiation: 17 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MOAI1S Tag: 
+ Temperature: 25
+* Cell: MOAI1S Pin: VCC Instantiation: 3744 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MUX2 Tag: 
+ Temperature: 25
+* Cell: MUX2 Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: MXL2HS Tag: 
+ Temperature: 25
+* Cell: MXL2HS Pin: VCC Instantiation: 11 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND2 Tag: 
+ Temperature: 25
+* Cell: ND2 Pin: VCC Instantiation: 245 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND2P Tag: 
+ Temperature: 25
+* Cell: ND2P Pin: VCC Instantiation: 106 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND2S Tag: 
+ Temperature: 25
+* Cell: ND2S Pin: VCC Instantiation: 1692 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND2T Tag: 
+ Temperature: 25
+* Cell: ND2T Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND3 Tag: 
+ Temperature: 25
+* Cell: ND3 Pin: VCC Instantiation: 247 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND3HT Tag: 
+ Temperature: 25
+* Cell: ND3HT Pin: VCC Instantiation: 9 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND3P Tag: 
+ Temperature: 25
+* Cell: ND3P Pin: VCC Instantiation: 40 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: ND3S Tag: 
+ Temperature: 25
+* Cell: ND3S Pin: VCC Instantiation: 1608 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR2 Tag: 
+ Temperature: 25
+* Cell: NR2 Pin: VCC Instantiation: 2291 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR2F Tag: 
+ Temperature: 25
+* Cell: NR2F Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR2P Tag: 
+ Temperature: 25
+* Cell: NR2P Pin: VCC Instantiation: 534 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR2T Tag: 
+ Temperature: 25
+* Cell: NR2T Pin: VCC Instantiation: 13 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR3 Tag: 
+ Temperature: 25
+* Cell: NR3 Pin: VCC Instantiation: 936 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR3H Tag: 
+ Temperature: 25
+* Cell: NR3H Pin: VCC Instantiation: 49 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR3HP Tag: 
+ Temperature: 25
+* Cell: NR3HP Pin: VCC Instantiation: 10 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR3HT Tag: 
+ Temperature: 25
+* Cell: NR3HT Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: NR4S Tag: 
+ Temperature: 25
+* Cell: NR4S Pin: VCC Instantiation: 9 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA112S Tag: 
+ Temperature: 25
+* Cell: OA112S Pin: VCC Instantiation: 6 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA12 Tag: 
+ Temperature: 25
+* Cell: OA12 Pin: VCC Instantiation: 13 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA12P Tag: 
+ Temperature: 25
+* Cell: OA12P Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA12S Tag: 
+ Temperature: 25
+* Cell: OA12S Pin: VCC Instantiation: 33 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA13S Tag: 
+ Temperature: 25
+* Cell: OA13S Pin: VCC Instantiation: 9 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA22 Tag: 
+ Temperature: 25
+* Cell: OA22 Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OA22S Tag: 
+ Temperature: 25
+* Cell: OA22S Pin: VCC Instantiation: 6 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OAI112H Tag: 
+ Temperature: 25
+* Cell: OAI112H Pin: VCC Instantiation: 34 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OAI112HP Tag: 
+ Temperature: 25
+* Cell: OAI112HP Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OAI112HS Tag: 
+ Temperature: 25
+* Cell: OAI112HS Pin: VCC Instantiation: 974 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OAI12HS Tag: 
+ Temperature: 25
+* Cell: OAI12HS Pin: VCC Instantiation: 9 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OAI22H Tag: 
+ Temperature: 25
+* Cell: OAI22H Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OAI22S Tag: 
+ Temperature: 25
+* Cell: OAI22S Pin: VCC Instantiation: 570 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR2 Tag: 
+ Temperature: 25
+* Cell: OR2 Pin: VCC Instantiation: 38 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR2B1 Tag: 
+ Temperature: 25
+* Cell: OR2B1 Pin: VCC Instantiation: 7 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR2B1P Tag: 
+ Temperature: 25
+* Cell: OR2B1P Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR2B1S Tag: 
+ Temperature: 25
+* Cell: OR2B1S Pin: VCC Instantiation: 36 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR2S Tag: 
+ Temperature: 25
+* Cell: OR2S Pin: VCC Instantiation: 59 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3 Tag: 
+ Temperature: 25
+* Cell: OR3 Pin: VCC Instantiation: 12 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3B1S Tag: 
+ Temperature: 25
+* Cell: OR3B1S Pin: VCC Instantiation: 15 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3B2 Tag: 
+ Temperature: 25
+* Cell: OR3B2 Pin: VCC Instantiation: 8 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3B2P Tag: 
+ Temperature: 25
+* Cell: OR3B2P Pin: VCC Instantiation: 4 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3B2S Tag: 
+ Temperature: 25
+* Cell: OR3B2S Pin: VCC Instantiation: 17 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3P Tag: 
+ Temperature: 25
+* Cell: OR3P Pin: VCC Instantiation: 10 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: OR3S Tag: 
+ Temperature: 25
+* Cell: OR3S Pin: VCC Instantiation: 29 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: QDFFRBN Tag: 
+ Temperature: 25
+* Cell: QDFFRBN Pin: VCC Instantiation: 234 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: QDFFRBP Tag: 
+ Temperature: 25
+* Cell: QDFFRBP Pin: VCC Instantiation: 16 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: QDFFRBS Tag: 
+ Temperature: 25
+* Cell: QDFFRBS Pin: VCC Instantiation: 451 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: TIE1 Tag: 
+ Temperature: 25
+* Cell: TIE1 Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: VCCKD Tag: 
+ Temperature: 25
+* Cell: VCCKD Pin: VCC Instantiation: 8 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               6               6               0               0               6               0
+          ME2_C               6               6               0               0               6               0
+          ME3_C               6               6               0               0               6               0
+          ME4_C               6               6               0               0               6               0
+          ME5_C               6               6               0               0               6               0
+          ME6_C               6               6               0               0               6               0
+          Total              36              36               0               0              36               0
+
+
+- Cell: XNR2HS Tag: 
+ Temperature: 25
+* Cell: XNR2HS Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: XOR2HS Tag: 
+ Temperature: 25
+* Cell: XOR2HS Pin: VCC Instantiation: 2 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: XOR3 Tag: 
+ Temperature: 25
+* Cell: XOR3 Pin: VCC Instantiation: 3 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+- Cell: XOR3P Tag: 
+ Temperature: 25
+* Cell: XOR3P Pin: VCC Instantiation: 1 Snapped: 0 PowerGate: No Hidden: No
+  Grid:
+          Layer            Node        IntfNode    InternalNode            Elem             Tap           PGTap
+          ME1_C               1               1               0               0               1               0
+          Total               1               1               0               0               1               0
+
+
+
+Grid Statistics of Net VCC:
+- NODE
+  Total node: 87568
+    Top Level grid node: 87304
+      Top level interface node: 84242
+    Missing interface node: 264
+    Cell internal node: 0
+- ELEM
+  Total element: 90656
+    Top Level grid element: 90656
+    Cell internal element: 0
+- INST
+  Instance logically connected: 84226
+    Tech: 0
+    StdCell: 84218
+    Macro:
+      Early: 8
+      IR: 0
+      EM: 0
+    Current Region:  0
+  Dropped instance due to missing/incomplete cell library: 0
+- TAP
+  Total tap: 84506
+
+

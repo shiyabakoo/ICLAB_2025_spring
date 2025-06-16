@@ -1,0 +1,65 @@
+* The organization, structure, and layout of this file are copyrights and
+* confidential and proprietary trade secrets of Cadence Design Systems, Inc.,
+* subject to the terms and conditions of the license agreement in effect
+* between you and Cadence Design Systems, Inc. This file and its information
+* may not be disclosed, sold, or otherwise transferred to any third party
+* without the express written consent of Cadence Design Systems, Inc. Export
+* of any or all of this file in violation of any statute or regulation is
+* strictly prohibited.
+* 
+
+FORMAT: 11.0
+PROJECT: CHIP
+NET: VCC 
+CREATOR: smg
+
+CREATED: 2025-May-29 03:28:07 (2025-May-28 19:28:07 GMT)
+
+LAYOUT_XMIN: 0
+LAYOUT_YMIN: 0
+LAYOUT_XMAX: 1830860
+LAYOUT_YMAX: 1741160
+
+NODES: 87569
+NODE_FILE: VCC.mnode
+RESISTORS: 90656
+INDUCTORS: 0
+
+LAYERS: 20
+LAYER: ME6_C M 0 VCC.ml00
+LAYER: VIATP V 0 VCC.ml01
+LAYER: VIA5 V 0 VCC.ml02
+LAYER: MMCTP_C M 0 VCC.ml03
+LAYER: ME5_C M 0 VCC.ml04
+LAYER: VIA4 V 0 VCC.ml05
+LAYER: ME4_C M 10 VCC.ml06
+LAYER: VIA3 V 12 VCC.ml07
+LAYER: ME3_C M 630 VCC.ml08
+LAYER: VIA2 V 655 VCC.ml09
+LAYER: ME2_C M 3577 VCC.ml10
+LAYER: VIA1 V 2886 VCC.ml11
+LAYER: ME1_C M 82886 VCC.ml12
+LAYER: PLYCONT V 0 VCC.ml13
+LAYER: DIFFCONT V 0 VCC.ml14
+LAYER: PLY_C P 0 VCC.ml15
+LAYER: PSD_C D 0 VCC.ml16
+LAYER: NSD_C D 0 VCC.ml17
+LAYER: CSUBSTRATE M 0 VCC.ml18
+LAYER: REDUCED V 0 VCC.ml19
+
+CUT_LAYER: none
+GRID_CAP: false
+DIFF_CAP: false
+NUM_PINS: 84242
+PINS: VCC.bmpin
+NUM_INSTANCE_TAPS: 84506
+INSTANCES: VCC.bminst
+NUM_INSTANCES: 84226
+I_LOADS:
+NODE_MAP:
+RESISTOR_MAP:
+OUTPUT_WLT: drawn
+LAYOUT_SCALE_FACTOR: 1
+TEMPERATURE: 25
+BINARY_INST: true
+MICRON_UNITS: 1000
