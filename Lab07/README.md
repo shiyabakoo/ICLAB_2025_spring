@@ -10,6 +10,7 @@ CDC的問題是metastability(signal會處在一個unstable的狀態, 本來應�
 ![image](https://github.com/user-attachments/assets/acb65318-a764-4610-b5bb-2cb317bac074)
 
 第一級的ff處在metastability, 用第二級的ff來讓signal穩定在1
+另外, signal的傳遞在NDFF synchronizer需要滿足three edge rule來確保正確性, three edge rule是指在source端的signal需要維持的時間至少要碰到destination端的clk的3個edge, 否則signal有可能會沒傳到, 這個問題在clock domain從快到慢很容易發生
 ### The Handshake synchronizer
 Handshake synchronizer 是一種利用handshake的方式來確保data有成功在不同clock domain中傳遞的synchronizer
 當有data要從sclk傳到dclk時Src Ctrl會發出sreq並把sclk的MUX設為0讓data保持不變, 當Dest Ctrl收到dreg時會發出dack並接收從sclk傳來的data, 
